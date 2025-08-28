@@ -1,4 +1,4 @@
-In [10]: book2 = book1
+In [10]: book2 = book.title("Nineteen Eighty-FOur")
 
 In [11]: book2.title = "Nineteen Eighty-Four"
 
