@@ -32,7 +32,7 @@ class RoleRequiredMixin(AccessMixin):
             return HttpResponseForbidden("You do not have permission to view this page.")
         return super().dispatch(request, *args, **kwargs)
 
-class AdminView(RoleRequiredMixin, TemplateView):
+class Admin(RoleRequiredMixin, TemplateView):
     role_required = 'Admin'
     template_name = 'relationship_app/admin_page.html'
 
