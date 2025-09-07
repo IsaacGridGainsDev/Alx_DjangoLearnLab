@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import CreateView, DetailView
+from django.contrib.auth.decorators import permission_required
 from .models import Book, Library, UserProfile
 from django import forms
 
