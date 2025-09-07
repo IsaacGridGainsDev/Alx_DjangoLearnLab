@@ -56,7 +56,7 @@ class BookForm(forms.ModelForm):
         fields = ['title', 'author']
 
 @permission_required('relationship_app.can_add_book')
-def book_add(request):
+def add_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
         if form.is_valid():
@@ -67,7 +67,7 @@ def book_add(request):
     return render(request, 'relationship_app/book_form.html', {'form': form})
 
 @permission_required('relationship_app.can_change_book')
-def book_edit(request, pk):
+def edit_book(request, pk):
     book = Book.objects.get(pk=pk)
     if request.method == 'POST':
         form = BookForm(request.POST, instance=book)
@@ -79,7 +79,7 @@ def book_edit(request, pk):
     return render(request, 'relationship_app/book_form.html', {'form': form})
 
 @permission_required('relationship_app.can_delete_book')
-def book_delete(request, pk):
+def delete_book(request, pk):
     book = Book.objects.get(pk=pk)
     if request.method == 'POST':
         book.delete()
