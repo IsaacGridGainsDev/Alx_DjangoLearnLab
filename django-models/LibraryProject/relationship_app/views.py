@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
-from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
-from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import CreateView, DetailView
 from .models import Book, Library, UserProfile
 
 # Create your views here.
@@ -22,44 +22,28 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
 
-class RoleRequiredMixin(AccessMixin):
-    role_required = None
+# Helpers
+def is_admin(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
-        if self.role_required is None or not hasattr(request.user, 'userprofile') or request.user.userprofile.role != self.role_required:
-            return HttpResponseForbidden("You do not have permission to view this page.")
-        return super().dispatch(request, *args, **kwargs)
+def is_librarian(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
 
-class Admin(RoleRequiredMixin, TemplateView):
-    role_required = 'Admin'
-    template_name = 'relationship_app/admin_page.html'
+def is_member(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 
-class LibrarianView(RoleRequiredMixin, TemplateView):
-    role_required = 'Librarian'
-    template_name = 'relationship_app/librarian_page.html'
+# Views
+@login_required
+@user_passes_test(is_admin)
+def Admin_view(request):
+    return render(request, 'relationship_app/admin_page.html')
 
-class MemberView(RoleRequiredMixin, TemplateView):
-    role_required = 'Member'
-    template_name = 'relationship_app/member_page.html'
+@login_required
+@user_passes_test(is_librarian)
+def Librarian_view(request):
+    return render(request, 'relationship_app/librarian_page.html')
 
-class BookCreateView(PermissionRequiredMixin, CreateView):
-    model = Book
-    fields = ['title', 'author']
-    template_name = 'relationship_app/book_form.html'
-    success_url = reverse_lazy('books')
-    permission_required = 'relationship_app.can_add_book'
-
-class BookUpdateView(PermissionRequiredMixin, UpdateView):
-    model = Book
-    fields = ['title', 'author']
-    template_name = 'relationship_app/book_form.html'
-    success_url = reverse_lazy('books')
-    permission_required = 'relationship_app.can_change_book'
-
-class BookDeleteView(PermissionRequiredMixin, DeleteView):
-    model = Book
-    template_name = 'relationship_app/book_confirm_delete.html'
-    success_url = reverse_lazy('books')
-    permission_required = 'relationship_app.can_delete_book'
+@login_required
+@user_passes_test(is_member)
+def Member_view(request):
+    return render(request, 'relationship_app/member_page.html')
