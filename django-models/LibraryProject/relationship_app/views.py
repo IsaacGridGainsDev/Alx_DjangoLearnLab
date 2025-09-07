@@ -28,6 +28,7 @@ class LibraryDetailView(DetailView):
         library = self.get_object()
         
 class RegisterView(CreateView):
+    #creating the base class wiht UserCreationForm()
     form_class = UserCreationForm
     suucess_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
