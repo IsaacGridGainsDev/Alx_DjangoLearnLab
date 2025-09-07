@@ -69,7 +69,7 @@ def member_view(request):
     return render(request, "member_page.html", {"user": request.user})"""
 #-------------------------------------------------####
 
-
+"""
 @login_required
 def admin_view(request):
     if request.user.userprofile.role == "Admin":
@@ -102,7 +102,7 @@ def signup_view(request):
         return redirect("library")
     return render(request, "register.html")
 
-
+"""
 # Helpers
 def is_admin(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
@@ -116,7 +116,7 @@ def is_member(user):
 
 # Admin View
 @user_passes_test(is_admin)
-def admin_view(request):
+def Admin_view(request):
     return render(request, 'admin_view.html')
 
 
