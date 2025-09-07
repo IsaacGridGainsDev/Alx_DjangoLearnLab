@@ -116,8 +116,8 @@ def is_member(user):
 
 # Admin View
 @user_passes_test(is_admin)
-def Admin_view(request):
-    return render(request, 'admin_view.html')
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
 
 
 # Librarian View

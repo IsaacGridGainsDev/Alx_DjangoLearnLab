@@ -5,13 +5,13 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
-        path('books/', views.list_books, name='books'),
-        path('library/', views.LibraryDetailView.as_view(), name='Library'),
-        #path('register/', views.register, name='register'),
-        path('register/', views.RegisterView.as_view(), name='register'
-        path('login/', LoginView.as_view(template_name='relationship_app/login.html'),
-        path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'),
-        path("admin-dashboard/", views.admin_view, name="admin_page"),
-        path("librarian-dashboard", views.librarian_view, name="librarian_page"),
-        path("member-dashboard", views.member_view, name="member_page"),
-        ]
+    path('books/', views.list_books, name='books'),
+    path('library/', views.LibraryDetailView.as_view(), name='Library'),
+    #path('register/', views.register, name='register'),
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('login/', LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
+    path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
+    path("admin-dashboard/", views.admin_view, name="relationship_app/admin_page"),
+    path("librarian-dashboard/", views.librarian_view, name="relationship_app/librarian_page"),
+    path("member-dashboard/", views.member_view, name="relationship_app/member_page"),
+]
