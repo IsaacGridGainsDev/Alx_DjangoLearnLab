@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from djang.urls import reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponseForbidden
+from django.contib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
@@ -8,6 +9,7 @@ from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
+from .models import UserProfile
 # Create your views here.
 
 def list_books(request):
@@ -32,3 +34,36 @@ class RegisterView(CreateView):
     form_class = UserCreationForm
     suucess_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
+
+
+@login_required
+def admin_view(request):
+    if request.user.userprofile.role == "Admin":
+        return render(request, "admin_page.html", {"user": request.user})
+
+@login_required
+def librarian_view(request):
+    if request.user.userprofile.role == "Librarian":
+        return render(request, "librarian_page.html", {"user": request.user})
+    return HttpResponseForbidden("Not Authorized")
+
+@login_required
+def member_view(request):
+    if request.user.userprofile.role == "Member":
+        return render(request, "member_page.html", {"user":request.user})
+    return HttpResponseForbidden("Not Authorized")
+
+def signup_view(request):
+    if request.method == "POST":
+        username = request.POST["email"]
+        password = request.POST["password"]
+        role = request.POST["role"]
+
+        user = user.objects.create_user(username=username, email=email, password=password)
+
+        user.userprofile.role = role
+        user.userprofile.save()
+
+        logn(request, user)
+        return redirect("library")
+    return render(request, "register.html")

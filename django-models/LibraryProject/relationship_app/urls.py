@@ -10,5 +10,8 @@ urlpatterns = [
         #path('register/', views.register, name='register'),
         path('register/', views.RegisterView.as_view(), name='register'
         path('login/', LoginView.as_view(template_name='relationship_app/login.html'),
-        patj('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'),
+        path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'),
+        path("admin-dashboard/", views.admin_view, name="admin_page"),
+        path("librarian-dashboard", views.librarian_view, name="librarian_page"),
+        path("member-dashboard", views.member_view, name="member_page"),
         ]
