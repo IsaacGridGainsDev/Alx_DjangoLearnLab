@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from djang.urls import reverse_lazy
 from django.http import HttpResponse
-from django.views.generic import ListView
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import ListView, CreateView
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
@@ -24,4 +27,7 @@ class LibraryDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         library = self.get_object()
         
-
+class RegisterView(CreateView):
+    form_class = UserCreationForm
+    suucess_url = reverse_lazy('login')
+    template_name = 'relationship_app/register.html'
