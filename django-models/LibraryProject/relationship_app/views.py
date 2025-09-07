@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
-from django.contrib.auth.mixins import AccessMixin
-from django.views.generic import ListView, CreateView, TemplateView
+from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
+from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from .models import Book, Library, UserProfile
 
@@ -43,3 +43,23 @@ class LibrarianView(RoleRequiredMixin, TemplateView):
 class MemberView(RoleRequiredMixin, TemplateView):
     role_required = 'Member'
     template_name = 'relationship_app/member_page.html'
+
+class BookCreateView(PermissionRequiredMixin, CreateView):
+    model = Book
+    fields = ['title', 'author']
+    template_name = 'relationship_app/book_form.html'
+    success_url = reverse_lazy('books')
+    permission_required = 'relationship_app.can_add_book'
+
+class BookUpdateView(PermissionRequiredMixin, UpdateView):
+    model = Book
+    fields = ['title', 'author']
+    template_name = 'relationship_app/book_form.html'
+    success_url = reverse_lazy('books')
+    permission_required = 'relationship_app.can_change_book'
+
+class BookDeleteView(PermissionRequiredMixin, DeleteView):
+    model = Book
+    template_name = 'relationship_app/book_confirm_delete.html'
+    success_url = reverse_lazy('books')
+    permission_required = 'relationship_app.can_delete_book'
