@@ -21,6 +21,7 @@ admin.site.register(CustomUser, CustomUserAdmin)
 editors, created = Group.objects.get_or_create(name='Editors')
 viewers, created = Group.objects.get_or_create(name='Viewers')
 
+editors.permissions.add(Permission.objects.get(codename='can_create'))
 editors.permissions.add(Permission.objects.get(codename='can_add_book'))
 editors.permissions.add(Permission.objects.get(codename='can_change_book'))
 editors.permissions.add(Permission.objects.get(codename='can_delete_book'))
