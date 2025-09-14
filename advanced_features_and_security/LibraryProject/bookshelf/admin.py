@@ -25,5 +25,7 @@ editors.permissions.add(Permission.objects.get(codename='can_create'))
 editors.permissions.add(Permission.objects.get(codename='can_add_book'))
 editors.permissions.add(Permission.objects.get(codename='can_change_book'))
 editors.permissions.add(Permission.objects.get(codename='can_delete_book'))
+editors.permissions.add(Permission.objects.get(codename='book_list'))
 
 viewers.permissions.add(Permission.objects.get(codename='can_view_book'))
+viewers.permissions.add(Permission.objects.get(codename='book_list'))

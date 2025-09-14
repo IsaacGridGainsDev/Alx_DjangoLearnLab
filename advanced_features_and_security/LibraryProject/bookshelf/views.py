@@ -23,3 +23,8 @@ def add_book(request):
     else:
         form = BookForm()
     return render(request, 'bookshelf/book_form.html', {'form': form})
+
+@permission_required('bookshelp.book_list', raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'bookshelf/book_list.html', {'books': books})

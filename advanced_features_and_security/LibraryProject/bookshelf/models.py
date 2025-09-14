@@ -13,6 +13,7 @@ class Book(models.Model):
             ("can_add_book", "Can add book"),
             ("can_change_book", "Can change book"),
             ("can_delete_book", "Can delete book"),
+            ("book_list", "Book list"),
         ]
 
     def __str__(self):
