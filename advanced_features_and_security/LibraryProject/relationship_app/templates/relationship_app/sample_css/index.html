@@ -3,56 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Learning the box model</title>
 </head>
 <style>
-    * {
-        margin: 0;
+    *{
         padding: 0;
+        margin: 0;
         box-sizing: border-box;
     }
-
-    body{
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100vw;
-        margin: 20px auto;
-        padding: 20px auto;
-        background-color: #f0f0f0;
-        display: flex;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
+    .container1 {
+        display:flex;
+        justify-content: space-between;
+        width: 80vw;
+        margin:  10px;
+        padding: 10px;
+        background: rgba(121, 141, 141, 0.861);
+        border-radius: 4.5px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
     }
-    .container{
-        display: flex;
-        width: 50vw;
-        height: 50vh;
-        /* align-items: center; */
-        justify-content: center;
-        justify-items: center;
+    .container2 {
+        display:flex;
+        justify-content: space-between;
+        width: 80vw;
+        margin:  10px;
+        padding: 10px;
+        background: rgba(121, 141, 141, 0.861);
+        border-radius: 4.5px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
     }
-    p{
-        padding: 20px auto;
-        margin: 20px auto;
-        color: red;
-        border: 2px solid rgb(122, 120, 120);
-        border-radius: 7px;
-        box-shadow: 0 0 10px #000;
-        width: 100px;
-        height: 100px;
-        text-align: center;
+    p {
+        margin: 0 10px;
+        border-radius: 4.5px;
     }
 </style>
-<body>
-    <div class="container">
-        <p style="color: green;">I am a Goat</p>
-        <p>I am a dog </p>
-        <p>I am a Donkey</p>
+<body style="display: flex; margin: 10px; flex-direction: column; justify-content: center; align-items: center;">
+    <div class="container1">
+
+        <p class="fire" style="border: 2px dashed red; margin: 0 10px; padding: 0 10px;">
+            Lorem is fine!
+        </p>
+        <p class="fire" style="border: 2px solid red; margin: 0 10px;">
+            Lorem is fine!
+        </p>
     </div>
+    <div class="container2">
+
+        <p class="fire" style="border: 2px solid red;">
+            Lorem is fine!
+        </p>
+        <p class="fire" style="border: 2px solid red;">
+            Lorem is fine!
+        </p>
+    </div>
+    <p class="fire" style="border: 2px solid red;">
+        Lorem is fine!
+    </p>
 </body>
 </html>
