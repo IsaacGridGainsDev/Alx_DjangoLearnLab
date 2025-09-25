@@ -3,6 +3,11 @@ from .models import Author, Book
 from datetime import date
 
 class BookSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the book model and it converts book model instances into JSON
+    and it also validates the publication year to ensure it is not in the future
+    FInally, it converts JSON input back into Book objects
+    """
     class Meta:
         model = Book
         fields = ['id', 'title', 'publication_year', 'author']
@@ -13,6 +18,10 @@ class BookSerializer(serializers.ModelSerializer):
         return value
 
 class AuthorSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the author model and it converts author model instances into JSON
+    It includes nested representation of related book objects
+    """
     books = BookSerializer(many=True, read_only=True)
 
     class Meta:
