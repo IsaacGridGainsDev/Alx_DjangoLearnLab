@@ -34,3 +34,34 @@ def perform_create(self, serializer):
 def perform_update(self, serializer):
     serializer.save()
     print("Book is being updated")
+
+
+# ✅ Advanced API Project – Task 4 Documentation
+
+This README provides full documentation for **Task 4**, including **setup instructions**, **available endpoints**, **example queries** (filtering, searching, ordering), and **how to run tests**.
+
+---
+
+## 🚀 Setup Instructions
+
+```bash
+# 1️⃣ Clone the repository
+git clone https://github.com/your-username/Alx_DjangoLearnLab.git
+cd Alx_DjangoLearnLab/advanced-api-project
+
+# 2️⃣ Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
+
+# 3️⃣ Install dependencies
+pip install -r requirements.txt
+
+# 4️⃣ Apply migrations
+python manage.py migrate
+
+# 5️⃣ Create superuser (optional, for admin panel)
+python manage.py createsuperuser
+
+# 6️⃣ Run the development server
+python manage.py runserver
