@@ -16,7 +16,7 @@ class BookListView(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     # The filter_backends attribute is set to a list containing the DjangoFilterBackend class. This allows users to filter books based on specific attributes.
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     # The filterset_fields attribute is set to a list containing the fields that users can filter books by.
     filterset_fields = ['title','author__name', 'publication_year']
     # The search_fields attribute is set to a list containing the fields that users can search books by.
