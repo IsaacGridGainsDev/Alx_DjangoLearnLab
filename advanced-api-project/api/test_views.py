@@ -1,10 +1,10 @@
 from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.test import TestCase
+from rest_framework.test import APITestCase
 from api.models import Author, Book
 
-class TestBookAPI(TestCase):
+class TestBookAPI(APITestCase):
     def setUp(self):
         self.author = Author.objects.create(name="Chimamanda Ngozi Adichie")
         self.book = Book.objects.create(title="Half of a Yellow Sun", publication_year=2022, author=self.author)
