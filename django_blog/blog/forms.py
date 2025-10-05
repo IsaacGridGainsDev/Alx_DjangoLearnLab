@@ -22,7 +22,12 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 from .models import Post
-
+try:
+    from taggit.forms import TagWidget
+    TAG_WIDGET = TagWidget
+except Exception:
+    TagWidget = None
+    TAG_WIDGET = forms.TextInput
 class PostForm(forms.ModelForm):
     """
     ModelForm for Post creation and editing.
