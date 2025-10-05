@@ -51,7 +51,10 @@ class Post(models.Model):
     def get_absolute_url(self):
         # used by CreateView/UpdateView to redirect to detail
         return reverse("post-detail", args=[str(self.pk)])
-
+    def get_edit_url(self):
+        return reverse("post-edit", args=[str(self.pk)])
+    def get_delete_url(self):
+        return reverse("post-delete", args=[str(self.pk)])
 class Comment(models.Model):
     """
     Comment model: many-to-one from Comment -> Post, author is a User.
