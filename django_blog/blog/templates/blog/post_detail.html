@@ -41,6 +41,15 @@
         {{ comment_form.content }}<br>
         {{ comment_form.content.errors }}
       </p>
+      
+      {% if post.tags.all %}
+      <p>Tags:
+        {% for tag in post.tags.all %}
+          <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
+
       <button type="submit">Post comment</button>
     </form>
   </section>

@@ -16,6 +16,11 @@
       {{ form.content }}<br>
       {{ form.content.errors }}
     </p>
+    <p>
+      {{ form.tags.label_tag }}<br>
+      {{ form.tags }}<br>
+      {{ form.tags.errors }}
+    </p>
     <button type="submit">{% if object %}Save changes{% else %}Create post{% endif %}</button>
   </form>
 

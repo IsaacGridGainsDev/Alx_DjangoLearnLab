@@ -11,6 +11,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
+from taggit.models import Tag
+
+
 class UserLoginView(auth_views.LoginView):
     template_name = "blog/login.html"   
 
@@ -45,7 +48,52 @@ class PostListView(ListView):
     context_object_name = "posts"
     template_name = "blog/posts/post_list.html"
     paginate_by = 10  # optional
+    def get_queryset(self):
+            """
+            Supports:
+            - q=search_term  -> searches title, content, and tag names
+            - ordering via ?ordering=published_date or ?ordering=-published_date
+            Also uses select_related/prefetch_related to optimize DB queries.
+            """
+            qs = Post.objects.select_related("author").prefetch_related("tags").all()
 
+            q = self.request.GET.get("q", "").strip()
+            if q:
+                # Search across title, content and tag name using Q objects
+                qs = qs.filter(
+                    Q(title__icontains=q) |
+                    Q(content__icontains=q) |
+                    Q(tags__name__icontains=q)
+                ).distinct()
+
+            # Optional ordering param
+            ordering = self.request.GET.get("ordering")
+            if ordering:
+                qs = qs.order_by(ordering)
+
+            return qs
+
+
+class PostsByTagView(ListView):
+    """
+    List posts for a tag (URL: /tags/<str:tag>/)
+    """
+    model = Post
+    context_object_name = "posts"
+    template_name = "blog/posts/post_list.html"
+    paginate_by = 10
+
+    def get_queryset(self):
+        tag = self.kwargs.get("tag")
+        # prefetch tags and author to reduce queries
+        qs = Post.objects.select_related("author").prefetch_related("tags").filter(tags__name__iexact=tag)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["tag"] = self.kwargs.get("tag")
+        return ctx
+                    
 # View single post - public
 class PostDetailView(DetailView):
     model = Post

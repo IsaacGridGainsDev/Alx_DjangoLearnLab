@@ -1,0 +1,46 @@
+{% extends "blog/base.html" %}
+{% block title %}Posts{% endblock %}
+
+{% block content %}
+<h1>Posts{% if tag %} — tag: {{ tag }}{% endif %}</h1>
+
+<form method="get" action="{% url 'post-list' %}" class="search-form">
+  <input type="text" name="q" placeholder="Search posts..." value="{{ request.GET.q }}">
+  <button type="submit">Search</button>
+  <!-- Keep ordering param -->
+  <label style="margin-left:1rem">Order:
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=published_date">Oldest</a> |
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-published_date">Newest</a>
+  </label>
+</form>
+
+<ul>
+  {% for post in posts %}
+    <li>
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+      <p>by {{ post.author.username }} — {{ post.published_date|date:"M d, Y" }}</p>
+      <p>{{ post.content|truncatechars:200 }}</p>
+
+      {% if post.tags.all %}
+        <p>
+          Tags:
+          {% for tag in post.tags.all %}
+            <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No posts found.</li>
+  {% endfor %}
+</ul>
+
+{% if is_paginated %}
+  <div class="pagination">
+    {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Prev</a>{% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>{% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}
