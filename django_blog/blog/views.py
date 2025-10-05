@@ -1,46 +1,26 @@
-# blog/views.py
 from django.shortcuts import render, redirect
+from django.contrib.auth.views import LoginView, LogoutView
+from django.views import View
 from django.contrib import messages
-from django.contrib.auth import views as auth_views
-from django.contrib.auth.decorators import login_required
-from django.views.generic import UpdateView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-from django.contrib.auth.models import User
+from .forms import CustomUserCreationForm
 
-def register_view(request):
-    """
-    Handle user registration.
-    """
-    if request.method == "POST":
-        form = UserRegisterForm(request.POST)
+# built-in login/logout views
+class UserLoginView(LoginView):
+    template_name = 'blog/login.html'
+
+class UserLogoutView(LogoutView):
+    template_name = 'blog/logout.html'
+
+# custom register view
+class RegisterView(View):
+    def get(self, request):
+        form = CustomUserCreationForm()
+        return render(request, "blog/register.html", {"form": form})
+
+    def post(self, request):
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            messages.success(request, f"Account created for {user.username}. You may now log in.")
-            return redirect("login")  # name of the login URL below
-    else:
-        form = UserRegisterForm()
-    return render(request, "blog/register.html", {"form": form})
-
-
-@login_required
-def profile_view(request):
-    """
-    Display and allow editing of the user's profile.
-    Handles both User fields and Profile model fields.
-    """
-    if request.method == "POST":
-        uform = UserUpdateForm(request.POST, instance=request.user)
-        pform = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if uform.is_valid() and pform.is_valid():
-            uform.save()
-            pform.save()
-            messages.success(request, "Your profile has been updated.")
-            return redirect("profile")
-    else:
-        uform = UserUpdateForm(instance=request.user)
-        pform = ProfileUpdateForm(instance=request.user.profile)
-
-    context = {"uform": uform, "pform": pform}
-    return render(request, "blog/profile.html", context)
+            form.save()
+            messages.success(request, "Your account has been created. You can now log in.")
+            return redirect("login")
+        return render(request, "blog/register.html", {"form": form})
