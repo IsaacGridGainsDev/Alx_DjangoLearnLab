@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Comment, Post
 
 class CustomUserCreationForm(UserCreationForm):
     """
@@ -34,11 +35,25 @@ class PostForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"placeholder": "Enter post title", "class": "form-control"}),
             "content": forms.Textarea(attrs={"placeholder": "Write your post...", "class": "form-control", "rows": 10}),
         }
-2) views.py — CRUD views using generics + mixins
-Add to blog/views.py (or update):
 
-python
-Copy code
+class CommentForm(forms.ModelForm):
+    """
+    Simple form for creating/updating comments.
+    """
+    content = forms.CharField(widget=forms.Textarea(attrs={"rows": 3, "placeholder": "Write a comment..."}), max_length=2000)
+
+    class Meta:
+        model = Comment
+        fields = ["content"]
+
+    def clean_content(self):
+        data = self.cleaned_data.get("content", "").strip()
+        if not data:
+            raise forms.ValidationError("Comment cannot be empty.")
+        return data
+ #views.py — CRUD views using generics + mixins
+#Add to blog/views.py (or update):
+
 # blog/views.py
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin

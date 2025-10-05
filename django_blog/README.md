@@ -49,3 +49,13 @@ Permission rules:
 Notes:
 - PostCreateView sets `author` automatically via `form_valid`.
 - Use `LoginRequiredMixin` and `UserPassesTestMixin` to enforce access control.
+# Comments Feature
+
+- Model: `Comment` (post FK, author FK, content, created_at, updated_at).
+- Create: submit comment on a post's detail page (POST to `/posts/<pk>/`).
+- Edit: `GET/POST /comments/<pk>/edit/` (author only).
+- Delete: `POST /comments/<pk>/delete/` (author only).
+- Templates:
+  - `blog/posts/post_detail.html` shows comments and comment form.
+  - `blog/comments/comment_form.html` and `comment_confirm_delete.html`.
+- Tests: `blog/tests/test_comments.py`
