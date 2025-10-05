@@ -24,7 +24,7 @@ class CustomUserCreationForm(UserCreationForm):
 from .models import Post
 try:
     from taggit.forms import TagWidget
-    TAG_WIDGET = TagWidget
+    TAG_WIDGET = TagWidget()
 except Exception:
     TagWidget = None
     TAG_WIDGET = forms.TextInput
