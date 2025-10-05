@@ -32,3 +32,20 @@ Users can now register, log in, log out, and manage their profiles (with bio and
    python -m venv venv
    source venv/bin/activate   # on Linux/Mac
    venv\Scripts\activate      # on Windows
+# Post Management (CRUD)
+
+Routes:
+- GET  /posts/                -> PostListView
+- GET  /posts/new/            -> PostCreateView (authenticated)
+- GET  /posts/<pk>/           -> PostDetailView
+- GET  /posts/<pk>/edit/      -> PostUpdateView (author only)
+- POST /posts/<pk>/delete/    -> PostDeleteView (author only)
+
+Permission rules:
+- Create: authenticated users only
+- Edit/Delete: only post author
+- List/Detail: public
+
+Notes:
+- PostCreateView sets `author` automatically via `form_valid`.
+- Use `LoginRequiredMixin` and `UserPassesTestMixin` to enforce access control.

@@ -1,0 +1,23 @@
+{% extends "blog/base.html" %}
+{% block title %}{% if object %}Edit Post{% else %}New Post{% endif %}{% endblock %}
+{% block content %}
+  <h1>{% if object %}Edit Post{% else %}New Post{% endif %}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <p>
+      {{ form.title.label_tag }}<br>
+      {{ form.title }}<br>
+      {{ form.title.errors }}
+    </p>
+    <p>
+      {{ form.content.label_tag }}<br>
+      {{ form.content }}<br>
+      {{ form.content.errors }}
+    </p>
+    <button type="submit">{% if object %}Save changes{% else %}Create post{% endif %}</button>
+  </form>
+
+  <p><a href="{% url 'post-list' %}">Back to posts</a></p>
+{% endblock %}
