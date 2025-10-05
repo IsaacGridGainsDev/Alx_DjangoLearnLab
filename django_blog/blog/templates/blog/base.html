@@ -1,28 +1,17 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{% block title %}Django Blog{% endblock %}</title>
-
-  <!-- main CSS for the blog app -->
   <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
 </head>
 <body>
   <header>
     <nav>
-      <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'post-list' %}">Posts</a></li>
-        {% if user.is_authenticated %}
-          <li><a href="{% url 'profile' %}">Profile</a></li>
-          <li><a href="{% url 'logout' %}">Logout</a></li>
-        {% else %}
-          <li><a href="{% url 'login' %}">Login</a></li>
-          <li><a href="{% url 'register' %}">Register</a></li>
-        {% endif %}
-      </ul>
+      <a href="{% url 'login' %}">Login</a> |
+      <a href="{% url 'register' %}">Register</a>
     </nav>
   </header>
 
@@ -37,10 +26,6 @@
   <main>
     {% block content %}{% endblock %}
   </main>
-
-  <footer>
-    <p>&copy; 2025 Django Blog</p>
-  </footer>
 
   <script src="{% static 'blog/js/scripts.js' %}"></script>
 </body>
