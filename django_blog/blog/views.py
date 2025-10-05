@@ -28,7 +28,7 @@ class RegisterView(View):
             messages.success(request, "Account created. Please log in.")
             return redirect("login")
         return render(request, "blog/register.html", {"form": form})
-#method
+#  "method"
 @login_required
 def profile_view(request):
     # placeholder simple profile view (extend as needed)
