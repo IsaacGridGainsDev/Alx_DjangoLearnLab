@@ -86,14 +86,17 @@ class PostsByTagView(ListView):
     def get_queryset(self):
         tag = self.kwargs.get("tag")
         # prefetch tags and author to reduce queries
-        qs = Post.objects.select_related("author").prefetch_related("tags").filter(tags__name__iexact=tag)
+        if TagWidget:
+            qs = Post.objects.select_related("author").prefetch_related("tags").filter(tags__name__iexact=tag)
+        else:
+            qs = Post.objects.filter(tags__name__iexact=tag)
         return qs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["tag"] = self.kwargs.get("tag")
         return ctx
-                    
+
 # View single post - public
 class PostDetailView(DetailView):
     model = Post
