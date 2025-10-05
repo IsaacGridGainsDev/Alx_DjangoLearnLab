@@ -26,3 +26,9 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
+
+def home(request):
+    return render(request, 'blog/home.html')
+
+def posts(request):
+    return render(request, 'blog/posts.html')
