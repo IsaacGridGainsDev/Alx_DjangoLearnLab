@@ -3,8 +3,9 @@ Views for posts app - where content meets API 🚀
 """
 
 from rest_framework import viewsets, generics, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Count
@@ -189,3 +190,23 @@ class FeedView(generics.ListAPIView):
         ).select_related('author').prefetch_related('likes', 'comments')
         
         return queryset.order_by('-created_at')
+        
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def feed_view(request):
+    """Get posts from users the current user follows"""
+    user = request.user
+    following_users = user.following.all()
+    
+    # Include user's own posts and posts from following
+    queryset = Post.objects.filter(
+        Q(author__in=following_users) | Q(author=user),
+        is_published=True
+    ).select_related('author').prefetch_related('likes', 'comments').order_by('-created_at')
+    #pagination
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(qs, request)
+    serializer = PostSerializer(result_page, many=True, context={'request': request})
+    return paginator.get_paginated_response(serializer.data)
+   

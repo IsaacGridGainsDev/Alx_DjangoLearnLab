@@ -187,3 +187,28 @@ class LogoutView(APIView):
                 {'error': 'Something went wrong during logout'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+#user follow and unfollow class logic
+class UserFollowView(APIView):
+    """
+    Follow and unfollow users - connect with others! 👥
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def follow(self, request, pk=None):
+        """Follow a user - join their fan club! 👥"""
+        user_to_follow = get_object_or_404(CustomUser, id=pk)
+        request.user.follow(user_to_follow)
+        return Response(
+            {'message': f'You are now following @{user_to_follow.username}! 🎉'},
+            status=status.HTTP_200_OK
+        )
+    
+    def unfollow(self, request, pk=None):
+        """Unfollow a user - parting ways 👋"""
+        user_to_unfollow = get_object_or_404(CustomUser, id=pk)
+        request.user.unfollow(user_to_unfollow)
+        return Response(
+            {'message': f'You have unfollowed @{user_to_unfollow.username}'},
+            status=status.HTTP_200_OK
+        )

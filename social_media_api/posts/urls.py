@@ -17,4 +17,5 @@ urlpatterns = [
     
     # Include router URLs
     path('', include(router.urls)),
+    path('feed/', FeedView.as_view(), name='feed'),
 ]

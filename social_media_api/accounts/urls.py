@@ -8,7 +8,8 @@ from .views import (
     UserRegistrationView,
     UserLoginView,
     UserProfileViewSet,
-    LogoutView
+    LogoutView,
+    UserFollowView,
 )
 
 # Create a router for ViewSets
@@ -20,7 +21,11 @@ urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('profile/', UserProfileViewSet.as_view(), name='profile'),
+    path('feed/', FeedView.as_view(), name='feed'),
     
     # Include router URLs
     path('', include(router.urls)),
+    path('follow/<int:user_id>/', UserFollowView.as_view(), name='follow'),
+    path('unfollow/<int:user_id>/', UserFollowView.as_view(), name='unfollow'),
 ]
