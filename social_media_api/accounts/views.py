@@ -5,7 +5,7 @@ from django.shortcuts import render
 Views for the accounts app - where the magic happens ✨
 """
 
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -189,22 +189,29 @@ class LogoutView(APIView):
             )
 
 #user follow and unfollow class logic
-class UserFollowView(APIView):
+class UserFollowView(generics.GenericAPIView):
     """
     Follow and unfollow users - connect with others! 👥
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     
-    def follow(self, request, pk=None):
-        """Follow a user - join their fan club! 👥"""
-        user_to_follow = get_object_or_404(CustomUser, id=pk)
-        request.user.follow(user_to_follow)
-        return Response(
-            {'message': f'You are now following @{user_to_follow.username}! 🎉'},
-            status=status.HTTP_200_OK
-        )
-    
-    def unfollow(self, request, pk=None):
+    #is user authenticated
+
+    def post(self, request, pk=None):
+            """Follow a user - join their fan club! 👥"""
+            user_to_follow = get_object_or_404(CustomUser, id=pk)
+            if user_to_follow == request.user:
+                return Response(
+                    {'error': 'You cannot follow yourself!'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            request.user.follow(user_to_follow)
+            return Response(
+                {'message': f'You are now following @{user_to_follow.username}! 🎉'},
+                status=status.HTTP_200_OK
+            )
+
+    def delete(self, request, pk=None):
         """Unfollow a user - parting ways 👋"""
         user_to_unfollow = get_object_or_404(CustomUser, id=pk)
         request.user.unfollow(user_to_unfollow)
