@@ -22,6 +22,7 @@ class Post(models.Model):
         help_text="Catchy title to grab attention 🎯"
     )
     
+    #content = models.TextField()
     content = models.TextField(
         help_text="Your thoughts, dreams, and memes go here"
     )
