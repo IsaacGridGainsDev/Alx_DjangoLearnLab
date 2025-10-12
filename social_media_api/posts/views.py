@@ -58,14 +58,14 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
         """Like a post - spread the love ❤️"""
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         
         if post.author == request.user:
             return Response(
                 {'message': 'You cannot like your own post!'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
         if not created:
             return Response(
                 {'message': 'You already liked this post! One like per person 😊'},
@@ -84,9 +84,9 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def unlike(self, request, pk=None):
         """Unlike a post - breaking hearts 💔"""
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
         
-        like = Like.objects.filter(post=post, user=request.user).first()
+        like = Like.objects.filter(user=request.user, post=post).first()
         if not like:
             return Response(
                 {'message': "You haven't liked this post yet!"},
