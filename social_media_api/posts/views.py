@@ -2,7 +2,7 @@
 Views for posts app - where content meets API 🚀
 """
 
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
@@ -192,13 +192,14 @@ class FeedView(generics.ListAPIView):
         return queryset.order_by('-created_at')
         
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def feed_view(request):
     """Get posts from users the current user follows"""
     user = request.user
     following_users = user.following.all()
     
     # Include user's own posts and posts from following
+    #Post.objects.filter(author__in=following_users).order_by
     queryset = Post.objects.filter(
         Q(author__in=following_users) | Q(author=user),
         is_published=True
