@@ -22,6 +22,7 @@ class PostViewSet(viewsets.ModelViewSet):
     """
     ViewSet for posts - full CRUD with bells and whistles 🔔
     """
+    #Post.objects.all()
     queryset = Post.objects.filter(is_published=True).select_related('author')
     permission_classes = [IsAuthenticated]
     filter_class = PostFilter
@@ -126,6 +127,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """
     ViewSet for comments - where discussions thrive 💭
     """
+    #Comment.objects.all()
     queryset = Comment.objects.filter(is_active=True).select_related('author', 'post')
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
