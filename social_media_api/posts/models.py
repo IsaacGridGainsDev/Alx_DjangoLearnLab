@@ -40,12 +40,6 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     # Engagement metrics
-    likes = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='liked_posts',
-        blank=True,
-        help_text="Users who appreciate your content"
-    )
     
     # Post visibility
     is_published = models.BooleanField(

@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Count
 from .models import Post, Comment, Like
+from notifications.models import Notification
+from notifications.utils import create_notification
 from .serializers import (
     PostSerializer,
     PostCreateUpdateSerializer,
@@ -58,7 +60,7 @@ class PostViewSet(viewsets.ModelViewSet):
         """Like a post - spread the love ❤️"""
         post = self.get_object()
         
-        if post.likes.filter(id=request.user.id).exists():
+        if Like.objects.filter(post=post, user=request.user).exists():
             return Response(
                 {'message': 'You already liked this post! One like per person 😊'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -66,7 +68,8 @@ class PostViewSet(viewsets.ModelViewSet):
         
         post.likes.add(request.user)
         Like.objects.create(user=request.user, post=post)
-        
+        if post.author != request.user:
+            create_notification(post.author, request.user, 'liked your post', post)
         return Response(
             {
                 'message': 'Post liked! Thanks for the love! ❤️',
@@ -79,15 +82,16 @@ class PostViewSet(viewsets.ModelViewSet):
         """Unlike a post - breaking hearts 💔"""
         post = self.get_object()
         
-        if not post.likes.filter(id=request.user.id).exists():
+        like = Like.objects.filter(post=post, user=request.user).first()
+        if not like:
             return Response(
                 {'message': "You haven't liked this post yet!"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        post.likes.remove(request.user)
-        Like.objects.filter(user=request.user, post=post).delete()
+        like.delete()
         
+        Notification.objects.filter(actor=request.user, verb='liked your post', target_post=post).delete()
         return Response(
             {
                 'message': 'Post unliked!',
@@ -114,14 +118,10 @@ class PostViewSet(viewsets.ModelViewSet):
     def my_posts(self, request):
         """Get current user's posts - your content collection 📚"""
         posts = self.get_queryset().filter(author=request.user)
-        
+
         page = self.paginate_queryset(posts)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -139,6 +139,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [IsAuthenticated(), IsAuthorOrReadOnly()]
         return [IsAuthenticated()]
+
+    def perform_create(self, serializer):
+        """Set author to current user"""
+        comment = serializer.save(author=self.request.user)
+        post = comment.post
+
+        if post.author != self.request.user:
+            create_notification(post.author, self.request.user, 'commented on your post', post)
     
     def perform_destroy(self, instance):
         """Soft delete instead of hard delete - keeping history 📜"""
@@ -207,7 +215,6 @@ def feed_view(request):
     #pagination
     paginator = PageNumberPagination()
     paginator.page_size = 10
-    result_page = paginator.paginate_queryset(qs, request)
+    result_page = paginator.paginate_queryset(queryset, request)
     serializer = PostSerializer(result_page, many=True, context={'request': request})
     return paginator.get_paginated_response(serializer.data)
-   
