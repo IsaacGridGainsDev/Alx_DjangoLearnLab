@@ -58,29 +58,33 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
         """Like a post - spread the love ❤️"""
-        post = self.get_object()
+        post = get_object_or_404(Post, pk=pk)
         
-        if Like.objects.filter(post=post, user=request.user).exists():
+        if post.author == request.user:
+            return Response(
+                {'message': 'You cannot like your own post!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        if not created:
             return Response(
                 {'message': 'You already liked this post! One like per person 😊'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        post.likes.add(request.user)
-        Like.objects.create(user=request.user, post=post)
-        if post.author != request.user:
-            create_notification(post.author, request.user, 'liked your post', post)
+        Notification.objects.create(actor=request.user, verb='liked your post', target_post=post)
         return Response(
             {
                 'message': 'Post liked! Thanks for the love! ❤️',
                 'likes_count': post.likes_count
-            }
+            },
+            status=status.HTTP_201_CREATED
         )
     
     @action(detail=True, methods=['post'])
     def unlike(self, request, pk=None):
         """Unlike a post - breaking hearts 💔"""
-        post = self.get_object()
+        post = get_object_or_404(Post, pk=pk)
         
         like = Like.objects.filter(post=post, user=request.user).first()
         if not like:
