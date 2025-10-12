@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hau$r1u3db(7%g83wjjx*l)(=jp1i%rjo6v&t12o9*g*w=bl*$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -90,9 +90,14 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+    #mysql
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'social_media_api',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -133,6 +138,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+#media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -162,3 +171,29 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+SECURE_CSP = {
+    'default-src': "'self'",
+    'script-src': "'self' 'unsafe-inline' 'unsafe-eval'",
+    'style-src': "'self' 'unsafe-inline'",
+    'img-src': "'self' data:",
+    'font-src': "'self' data:",
+    'connect-src': "'self'",
+    'frame-src': "'self'",
+    'object-src': "'none'",
+    'media-src': "'self'",
+    'child-src': "'self'",
+    'worker-src': "'self'",
+    'manifest-src': "'self'",
+    'prefetch-src': "'self'",
+    'report-uri': '/csp-report',
+    'report-to': 'default',
+}
+XFRAME_OPTIONS = 'DENY'
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
